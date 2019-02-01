@@ -18,7 +18,9 @@ class engine():
 							
 	def displayResults(self,table):
 		''' Printing the Table on the Screen '''
-
+		if table == None:
+			print ("Error: Invalid Query")
+			sys.exit()
 		final_arr = []
 		final_arr.append(','.join(table['info']))
 		for row in table['table']:
@@ -64,7 +66,10 @@ class engine():
 		joined_table["info"] = info_arr
 
 		# Replace = with == for use in eval function
-		condition_str = re.sub('(?<=[\w ])(=)(?=[\w ])', '==', condition_str)
+		condition_str = condition_str.replace("=", "==")
+		condition_str = condition_str.replace("<==", "<=")
+		condition_str = condition_str.replace(">==", ">=")
+		# condition_str = re.sub('(?<=[\w ])(=)(?=[\w ])', '==', condition_str)
 
 		# Get the cartesian product of all the tables
 		if (len(tables) >= 2):
@@ -82,7 +87,7 @@ class engine():
 		for condition in conditions:
 			info_arr = joined_table["info"]
 			ret_table = []
-			if bool(re.match('.*==.*[a-zA-Z]+.*', condition.strip())):
+			if bool(re.match('.*==.*[a-zA-Z]+.*', condition.strip())):				# Join if there exists a character after ==
 				self.join_conditions.append((condition.strip().split('==')[0].strip(), condition.strip().split('==')[1].strip()))
 
 		for col in joined_table['info']:
@@ -90,8 +95,12 @@ class engine():
 			condition_str = condition_str.replace(col, 'row_val[' + str(idx) + ']')
 		# Evaluate the expression for each row to include into the output table
 		for row_val in joined_table['table']:
-			if eval(condition_str):
-				ret_table.append(row_val)
+			try:
+				if eval(condition_str):
+					ret_table.append(row_val)
+			except:
+				print ("Error in where clause")
+				sys.exit()
 		return {"info":joined_table["info"], "table":ret_table}
 
 	def solve_aggreage(self, col):
@@ -171,7 +180,7 @@ class engine():
 		''' Check if semicolon is present at the end of the query '''
 
 		if query[-1] != ";":
-			print ("Semicolon missing")
+			print ("Error: Semicolon missing")
 			sys.exit()
 
 		if query[-1] == ";":
@@ -200,7 +209,7 @@ class engine():
 		matches = re.match('^select.*from.*', query)
 		if not matches:
 			print("Given Query is Invalid")
-			return 
+			sys.exit()
 
 		# Get the columns to be printed
 		queries = query.split('from')[0]					# Part to the left of from
@@ -428,11 +437,13 @@ query = Engine.make_case_insensitive(query)
 query = Engine.check_semicolon(query)
 
 # Parse the Query
-try:
-	final_table = Engine.parse_query(query)
-except:
-	print ("Error")
-	sys.exit()
+final_table = Engine.parse_query(query)
+
+# try:
+	# final_table = Engine.parse_query(query)
+# except:
+	# print ("Error")
+	# sys.exit()
 	
 # Display the Result on the screen
 Engine.displayResults(final_table)
