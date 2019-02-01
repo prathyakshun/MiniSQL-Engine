@@ -143,14 +143,6 @@ class engine():
 						else:
 							temp.append(col)
 					cols = temp
-
-			# if self.is_distinct_present == True:					# NOT SURE
-			# 	arr = []
-			# 	for col in cols:
-			# 		col = ''.join(col)
-			# 		col = col[col.find("(")+1:col.find(")")]
-			# 		arr.append(col)
-			# 	cols = arr
 			
 			# Get the indices of the corresponding column in each row
 			col_indices = []
