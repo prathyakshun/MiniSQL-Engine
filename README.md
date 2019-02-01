@@ -3,4 +3,4 @@
 This SQL engine supports select and projection
 
 How to run the engine:
-python3 engine.py "<enter command here>"
+python3 engine.py "enter command here"
