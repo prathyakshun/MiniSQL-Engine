@@ -291,9 +291,6 @@ class engine():
 					if (is_col_present == 2):
 						print ("Error: Ambiguity in column specified")
 						sys.exit()
-			# if (len(tables_list) >= 2):
-			# 	print ("Error: Multiple tables specified without using Where clause")
-			# 	sys.exit()
 
 			# Appending table name to column fields
 			if self.is_star_present == False:
@@ -343,12 +340,12 @@ class engine():
 						sys.exit()
 
 
-			# Getting the condition expression
+			# Getting the condition column fields
 			condition_str = query.split('where')[1].strip()
 			remove_and = condition_str.replace(' and ', ' ')
 			remove_and_or = remove_and.replace(' or ',' ')
 			# Getting the condition column fields only once without any dupicates
-			cond_cols_list = set(re.findall(r"[A-Za-z][\w\.]*", remove_and_or))							# DOUBT
+			cond_cols_list = set(re.findall(r"[A-Za-z][\w\.]*", remove_and_or))
 			cond_cols_list = list(cond_cols_list)
 
 			# Checking column validity of condition column fields
@@ -437,13 +434,11 @@ query = Engine.make_case_insensitive(query)
 query = Engine.check_semicolon(query)
 
 # Parse the Query
-final_table = Engine.parse_query(query)
-
-# try:
-	# final_table = Engine.parse_query(query)
-# except:
-	# print ("Error")
-	# sys.exit()
+try:
+	final_table = Engine.parse_query(query)
+except:
+	print ("Error")
+	sys.exit()
 	
 # Display the Result on the screen
 Engine.displayResults(final_table)
